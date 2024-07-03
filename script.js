@@ -11,6 +11,7 @@ const clearBtn = document.querySelector(".clear-btn");
 let editElement;
 let editFlag = false;
 let editID = "";
+
 // ****** event listeners **********
 
 // submit form
@@ -29,31 +30,7 @@ function addItem(e) {
     const id = new Date().getTime().toString();
 
     if (value !== "" && !editFlag) {
-        const element = document.createElement("article");
-        let attr = document.createAttribute("data-id");
-        attr.value = id;
-        element.setAttributeNode(attr);
-        element.classList.add("grocery-item");
-        element.innerHTML = `<p class="title">${value}</p>
-            <div class="btn-container">
-              <!-- edit btn -->
-              <button type="button" class="edit-btn">
-                <i class="fas fa-edit"></i>
-              </button>
-              <!-- delete btn -->
-              <button type="button" class="delete-btn">
-                <i class="fas fa-trash"></i>
-              </button>
-            </div>
-          `;
-        // add event listeners to both buttons;
-        const deleteBtn = element.querySelector(".delete-btn");
-        deleteBtn.addEventListener("click", deleteItem);
-        const editBtn = element.querySelector(".edit-btn");
-        editBtn.addEventListener("click", editItem);
-
-        // append child
-        list.appendChild(element);
+        createListItem(id, value);
         // display alert
         displayAlert("item added to the list", "success");
         // show container
@@ -66,13 +43,14 @@ function addItem(e) {
         editElement.innerHTML = value;
         displayAlert("value changed", "success");
 
-        // edit  local storage
+        // edit local storage
         editLocalStorage(editID, value);
         setBackToDefault();
     } else {
         displayAlert("please enter value", "danger");
     }
 }
+
 // display alert
 function displayAlert(text, action) {
     alert.textContent = text;
@@ -99,7 +77,6 @@ function clearItems() {
 }
 
 // delete item
-
 function deleteItem(e) {
     const element = e.currentTarget.parentElement.parentElement;
     const id = element.dataset.id;
@@ -115,6 +92,7 @@ function deleteItem(e) {
     // remove from local storage
     removeFromLocalStorage(id);
 }
+
 // edit item
 function editItem(e) {
     const element = e.currentTarget.parentElement.parentElement;
@@ -127,7 +105,8 @@ function editItem(e) {
     //
     submitBtn.textContent = "edit";
 }
-// set backt to defaults
+
+// set back to defaults
 function setBackToDefault() {
     grocery.value = "";
     editFlag = false;
@@ -196,6 +175,7 @@ function createListItem(id, value) {
     attr.value = id;
     element.setAttributeNode(attr);
     element.classList.add("grocery-item");
+    element.setAttribute("draggable", "true");
     element.innerHTML = `<p class="title">${value}</p>
             <div class="btn-container">
               <!-- edit btn -->
@@ -214,6 +194,70 @@ function createListItem(id, value) {
     const editBtn = element.querySelector(".edit-btn");
     editBtn.addEventListener("click", editItem);
 
+    // add drag and drop event listeners
+    element.addEventListener("dragstart", dragStart);
+    element.addEventListener("dragover", dragOver);
+    element.addEventListener("drop", drop);
+    element.addEventListener("dragend", dragEnd);
+
     // append child
     list.appendChild(element);
 }
+
+// Drag and Drop Functions
+
+let dragSrcEl = null;
+
+function dragStart(e) {
+    dragSrcEl = this;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+    this.classList.add('dragging');
+}
+
+function dragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+}
+
+function drop(e) {
+    e.stopPropagation(); // stops the browser from redirecting.
+    if (dragSrcEl !== this) {
+        dragSrcEl.innerHTML = this.innerHTML;
+        this.innerHTML = e.dataTransfer.getData('text/html');
+
+        // Update event listeners for new elements
+        const deleteBtnSrc = dragSrcEl.querySelector(".delete-btn");
+        deleteBtnSrc.removeEventListener("click", deleteItem);
+        deleteBtnSrc.addEventListener("click", deleteItem);
+        const editBtnSrc = dragSrcEl.querySelector(".edit-btn");
+        editBtnSrc.removeEventListener("click", editItem);
+        editBtnSrc.addEventListener("click", editItem);
+
+        const deleteBtnDst = this.querySelector(".delete-btn");
+        deleteBtnDst.removeEventListener("click", deleteItem);
+        deleteBtnDst.addEventListener("click", deleteItem);
+        const editBtnDst = this.querySelector(".edit-btn");
+        editBtnDst.removeEventListener("click", editItem);
+        editBtnDst.addEventListener("click", editItem);
+    }
+    return false;
+}
+
+function dragEnd(e) {
+    this.classList.remove('dragging');
+}
+
+// Update local storage order after drag and drop
+function updateLocalStorageOrder() {
+    const items = document.querySelectorAll(".grocery-item");
+    const newItems = [];
+    items.forEach(item => {
+        const id = item.getAttribute("data-id");
+        const value = item.querySelector(".title").textContent;
+        newItems.push({ id, value });
+    });
+    localStorage.setItem("list", JSON.stringify(newItems));
+}
+
+list.addEventListener("dragend", updateLocalStorageOrder);

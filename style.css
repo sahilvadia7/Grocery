@@ -4,20 +4,23 @@ Fonts
 ===============
 */
 
-@import url("https://fonts.googleapis.com/css?family=Open+Sans|Roboto:400,700&display=swap");
-
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+ES+Deco:wght@100..400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playwrite+ES+Deco:wght@100..400&family=Playwrite+US+Modern:wght@100..400&display=swap');
 /*
+
 =============== 
 Variables
 ===============
 */
 
 :root {
+    
     /* dark shades of primary color*/
     --clr-primary-1: hsl(205, 86%, 17%);
     --clr-primary-2: hsl(205, 77%, 27%);
     --clr-primary-3: hsl(205, 72%, 37%);
     --clr-primary-4: hsl(205, 63%, 48%);
+    
     /* primary/main color */
     --clr-primary-5: #49a6e9;
     /* lighter shades of primary color */
@@ -38,14 +41,15 @@ Variables
     --clr-grey-8: hsl(210, 31%, 80%);
     --clr-grey-9: hsl(212, 33%, 89%);
     --clr-grey-10: hsl(210, 36%, 96%);
+    --clr-purple: hsl(293, 75%, 70%);
     --clr-white: #fff;
     --clr-red-dark: hsl(360, 67%, 44%);
     --clr-red-light: hsl(360, 71%, 66%);
     --clr-green-dark: hsl(125, 67%, 44%);
     --clr-green-light: hsl(125, 71%, 66%);
     --clr-black: #222;
-    --ff-primary: "Roboto", sans-serif;
-    --ff-secondary: "Open Sans", sans-serif;
+    --ff-primary: "Playwrite US Modern", cursive;
+    --ff-secondary: "Playwrite ES Deco", cursive;
     --transition: all 0.3s linear;
     --spacing: 0.25rem;
     --radius: 0.5rem;
@@ -71,7 +75,7 @@ Global Styles
 }
 
 body {
-    font-family: var(--ff-secondary);
+    font-family: var(--ff-primary);
     background: var(--clr-grey-10);
     color: var(--clr-grey-1);
     line-height: 1.5;
@@ -98,7 +102,7 @@ h1,
 h2,
 h3,
 h4 {
-    letter-spacing: var(--spacing);
+    /* letter-spacing: var(--spacing); */
     text-transform: capitalize;
     line-height: 1.25;
     margin-bottom: 0.75rem;
@@ -115,6 +119,7 @@ h2 {
 
 h3 {
     font-size: 1.25rem;
+    padding-bottom: 50px;
 }
 
 h4 {
@@ -225,6 +230,7 @@ Grocery List
     align-items: center;
     text-align: center;
     font-size: 0.7rem;
+    font-family: var(--ff-primary);
     border-radius: 0.25rem;
     letter-spacing: var(--spacing);
     text-transform: capitalize;
@@ -276,7 +282,8 @@ Grocery List
     align-items: center;
     padding: 0.25rem;
     text-transform: capitalize;
-    letter-spacing: 2px;
+    font-family: var(--ff-primary);
+    letter-spacing: 1px;
     border-top-right-radius: var(--radius);
     border-bottom-right-radius: var(--radius);
     cursor: pointer;
@@ -363,6 +370,7 @@ Grocery List
     border-color: transparent;
     color: var(--clr-red-light);
     margin: 0 auto;
+    font-family: var(--ff-primary);
     font-size: 0.85rem;
     letter-spacing: var(--spacing);
     cursor: pointer;
